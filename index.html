@@ -338,6 +338,43 @@
 
         .currency-loading { text-align: center; padding: 30px; color: var(--text-dark-secondary); font-size: 13px; }
 
+        /* Foreign Currency Row */
+        .currency-foreign {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid var(--border-dark);
+            border-radius: 14px; padding: 12px 16px;
+            margin-bottom: 10px;
+        }
+        .currency-foreign-label { font-size: 11px; color: var(--text-dark-secondary); margin-bottom: 8px; }
+        .currency-foreign-row { display: flex; align-items: center; gap: 8px; }
+        .foreign-select {
+            flex: 0 0 auto;
+            background: var(--bg-dark-tertiary);
+            border: 1px solid var(--border-dark);
+            border-radius: 10px; padding: 8px 10px;
+            color: var(--text-dark); font-size: 14px; font-weight: 600;
+            cursor: pointer; outline: none; max-width: 150px;
+        }
+        .foreign-select:focus { border-color: #10b981; }
+        body.light .foreign-select { background: #f8fafc; }
+        .foreign-input { border-color: #10b981 !important; color: #10b981 !important; }
+        .foreign-result {
+            margin-top: 10px;
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+            background: rgba(16, 185, 129, 0.12);
+            border-radius: 10px; padding: 10px 14px;
+        }
+        .foreign-result.hidden { display: none; }
+        .foreign-result-expr { font-size: 13px; color: var(--text-dark-secondary); }
+        .foreign-result-twd { font-size: 20px; font-weight: 700; color: #10b981; font-family: 'Courier New', monospace; }
+        .foreign-result-unit { font-size: 12px; color: var(--text-dark-secondary); }
+        .foreign-result-btn {
+            margin-left: auto; padding: 6px 12px; font-size: 11px;
+            background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981;
+            border-radius: 8px; color: #10b981; cursor: pointer;
+        }
+        .foreign-result-btn:hover { background: rgba(16, 185, 129, 0.35); }
+
         /* Quick Rate sidebar */
         .quick-rate-list { display: flex; flex-direction: column; gap: 6px; }
         .quick-rate-row {
@@ -775,6 +812,21 @@
                             <span class="currency-amount-unit">TWD</span>
                         </div>
                         <button class="refresh-btn" id="refreshBtn" title="刷新匯率">🔄</button>
+                    </div>
+                    <!-- 當前貨幣輸入 -->
+                    <div class="currency-foreign">
+                        <div class="currency-foreign-label">🛒 當前貨幣 Foreign Currency（輸入外幣金額換算台幣）</div>
+                        <div class="currency-foreign-row">
+                            <select id="foreignSelect" class="foreign-select"></select>
+                            <input type="number" id="foreignInput" class="currency-amount-input foreign-input" placeholder="金額" min="0" step="any">
+                            <span class="currency-amount-unit" id="foreignUnit">USD</span>
+                        </div>
+                        <div id="foreignResult" class="foreign-result hidden">
+                            <span class="foreign-result-expr"></span>
+                            <span class="foreign-result-twd"></span>
+                            <span class="foreign-result-unit">TWD 新台幣</span>
+                            <button class="foreign-result-btn" onclick="sendForeignToCalc()">→ 帶入計算機</button>
+                        </div>
                     </div>
                     <!-- 工具列 -->
                     <div class="currency-toolbar">
@@ -1498,6 +1550,48 @@
         document.getElementById('currencyInput').addEventListener('input', renderCurrencyGrid);
         document.getElementById('refreshBtn').addEventListener('click', fetchExchangeRates);
 
+        // ========== Foreign Currency ==========
+        function initForeignSelect() {
+            const sel = document.getElementById('foreignSelect');
+            sel.innerHTML = CURRENCIES.map(c =>
+                `<option value="${c.code}">${c.flag} ${c.code} ${c.name}</option>`
+            ).join('');
+        }
+
+        function renderForeignResult() {
+            const code = document.getElementById('foreignSelect').value;
+            const amount = parseFloat(document.getElementById('foreignInput').value);
+            const resultEl = document.getElementById('foreignResult');
+            document.getElementById('foreignUnit').textContent = code;
+
+            if (!amount || isNaN(amount) || !exchangeRates[code]) {
+                resultEl.classList.add('hidden');
+                return;
+            }
+
+            const twdValue = amount / exchangeRates[code];
+            resultEl.classList.remove('hidden');
+            resultEl.querySelector('.foreign-result-expr').textContent = `${amount} ${code}  =`;
+            resultEl.querySelector('.foreign-result-twd').textContent =
+                twdValue.toLocaleString('zh-TW', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        window.sendForeignToCalc = () => {
+            const code = document.getElementById('foreignSelect').value;
+            const amount = parseFloat(document.getElementById('foreignInput').value);
+            if (!amount || !exchangeRates[code]) return;
+            currentDisplay = (amount / exchangeRates[code]).toFixed(2);
+            updateDisplay();
+            displayFormula.textContent = `${code} → TWD`;
+            document.querySelector('.tab[data-tab="calc"]').click();
+        };
+
+        document.getElementById('foreignSelect').addEventListener('change', () => {
+            document.getElementById('foreignUnit').textContent = document.getElementById('foreignSelect').value;
+            renderForeignResult();
+        });
+        document.getElementById('foreignInput').addEventListener('input', renderForeignResult);
+
         // ========== Saved ==========
         function renderSaved() {
             savedCount.textContent = savedFormulas.length;
@@ -1624,6 +1718,7 @@
         // ========== Attach misc listeners ==========
         function attachEventListeners() {
             renderSaved();
+            initForeignSelect();
             // 載入快取匯率，立即渲染
             if (Object.keys(exchangeRates).length > 0) {
                 renderCurrencyGrid();
