@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>∑ Calc - 超強萬能計算機</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --primary: #06b6d4;
@@ -23,6 +19,7 @@
             --red: #dc2626;
             --red-light: #991b1b;
             --green: #10b981;
+            --purple: #8b5cf6;
         }
 
         body {
@@ -44,10 +41,7 @@
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1200px; margin: 0 auto; }
 
         .header {
             display: flex;
@@ -58,17 +52,9 @@
             gap: 10px;
         }
 
-        .title {
-            font-size: 36px;
-            font-weight: 700;
-            letter-spacing: -1px;
-        }
+        .title { font-size: 36px; font-weight: 700; letter-spacing: -1px; }
 
-        .controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+        .controls { display: flex; gap: 10px; align-items: center; }
 
         .lang-selector {
             background: var(--bg-dark-tertiary);
@@ -80,29 +66,20 @@
             font-size: 13px;
             transition: all 0.2s;
         }
-
-        .lang-selector:hover {
-            background: var(--primary);
-        }
+        .lang-selector:hover { background: var(--primary); }
 
         .theme-btn {
             background: var(--bg-dark-tertiary);
             border: none;
             color: var(--text-dark);
-            width: 44px;
-            height: 44px;
+            width: 44px; height: 44px;
             border-radius: 12px;
             cursor: pointer;
             font-size: 20px;
             transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
-
-        .theme-btn:hover {
-            background: var(--primary);
-        }
+        .theme-btn:hover { background: var(--primary); }
 
         .panel {
             background: rgba(30, 41, 59, 0.5);
@@ -111,10 +88,7 @@
             padding: 24px;
             backdrop-filter: blur(10px);
         }
-
-        body.light .panel {
-            background: rgba(255, 255, 255, 0.8);
-        }
+        body.light .panel { background: rgba(255, 255, 255, 0.8); }
 
         .display {
             background: rgba(15, 23, 42, 0.6);
@@ -124,64 +98,72 @@
             margin-bottom: 20px;
             text-align: right;
             min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            justify-content: center;
+            display: flex; flex-direction: column;
+            align-items: flex-end; justify-content: center;
         }
-
-        body.light .display {
-            background: rgba(241, 245, 249, 0.6);
-        }
+        body.light .display { background: rgba(241, 245, 249, 0.6); }
 
         .display-text {
-            font-size: 32px;
-            font-weight: 700;
+            font-size: 32px; font-weight: 700;
             color: var(--primary);
             font-family: 'Courier New', monospace;
-            word-break: break-all;
-            max-width: 100%;
+            word-break: break-all; max-width: 100%;
         }
 
         .display-formula {
-            font-size: 12px;
-            color: var(--text-dark-secondary);
-            margin-top: 8px;
-            text-align: right;
+            font-size: 12px; color: var(--text-dark-secondary);
+            margin-top: 8px; text-align: right;
             font-family: 'Courier New', monospace;
         }
 
+        /* ===== Tabs (主標籤) ===== */
         .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            display: flex; gap: 10px;
+            margin-bottom: 16px;
             border-bottom: 1px solid var(--border-dark);
             padding-bottom: 12px;
             overflow-x: auto;
         }
 
         .tab {
-            background: none;
-            border: none;
+            background: none; border: none;
             color: var(--text-dark-secondary);
-            padding: 8px 16px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
+            padding: 8px 16px; cursor: pointer;
+            font-weight: 600; transition: all 0.2s;
             white-space: nowrap;
             border-bottom: 2px solid transparent;
             font-size: 14px;
         }
+        .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab:hover { color: var(--primary); }
 
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
+        /* ===== 計算分類按鈕 (5 categories) ===== */
+        .calc-cats {
+            display: flex; gap: 6px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
         }
 
-        .tab:hover {
-            color: var(--primary);
+        .calc-cat {
+            flex: 1; min-width: 52px;
+            padding: 8px 4px;
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            background: var(--bg-dark-tertiary);
+            color: var(--text-dark-secondary);
+            cursor: pointer;
+            font-size: 12px; font-weight: 700;
+            transition: all 0.2s;
+            white-space: nowrap;
         }
+        .calc-cat.active {
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        .calc-cat:hover { color: var(--primary); }
 
+        /* ===== Button grid ===== */
         .button-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -189,188 +171,175 @@
         }
 
         .btn {
-            padding: 16px;
-            border: none;
+            padding: 16px; border: none;
             border-radius: 12px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
+            font-weight: 600; font-size: 16px;
+            cursor: pointer; transition: all 0.2s;
             background: var(--bg-dark-tertiary);
             color: var(--text-dark);
         }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .btn-function { background: rgba(6, 182, 212, 0.2); color: var(--primary); }
+        .btn-operator { background: rgba(16, 185, 129, 0.2); color: var(--green); }
+        .btn-delete { background: rgba(220, 38, 38, 0.2); color: var(--red); }
+        .btn-equals { background: rgba(6, 182, 212, 0.3); color: var(--primary); }
+        .btn-zero { grid-column: span 2; }
+        .btn-constant { background: rgba(139, 92, 246, 0.2); color: #a78bfa; font-size: 14px; }
+        .btn-spacer { opacity: 0; pointer-events: none; }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
+        /* ===== Base conversion ===== */
+        .base-displays {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-dark);
+            border-radius: 12px;
+            padding: 12px; margin-bottom: 12px;
         }
+        body.light .base-displays { background: rgba(241, 245, 249, 0.8); }
 
-        .btn-function {
+        .base-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+            cursor: pointer; border-radius: 4px;
+            transition: background 0.15s;
+        }
+        .base-row:last-child { border-bottom: none; }
+        .base-row.active-row { background: rgba(6, 182, 212, 0.1); padding: 6px 8px; }
+        .base-row:hover { background: rgba(6, 182, 212, 0.08); padding: 6px 8px; }
+
+        .base-label {
+            font-size: 11px; font-weight: 700;
+            color: var(--text-dark-secondary);
+            min-width: 36px;
+        }
+        .base-value {
+            font-size: 13px; font-weight: 600;
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+            word-break: break-all; text-align: right;
+        }
+        .base-row.active-row .base-value { color: #ffffff; font-size: 15px; }
+
+        .base-modes {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 6px; margin-bottom: 12px;
+        }
+        .base-mode {
+            padding: 8px; border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            background: var(--bg-dark-tertiary);
+            color: var(--text-dark-secondary);
+            cursor: pointer; font-size: 12px; font-weight: 700;
+            transition: all 0.2s;
+        }
+        .base-mode.active {
             background: rgba(6, 182, 212, 0.2);
             color: var(--primary);
+            border-color: var(--primary);
         }
 
-        .btn-operator {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--green);
-        }
+        .btn-base { font-size: 14px; padding: 14px; }
+        .btn-base:disabled { opacity: 0.2; cursor: not-allowed; transform: none; }
 
-        .btn-delete {
-            background: rgba(220, 38, 38, 0.2);
-            color: var(--red);
-        }
-
-        .btn-equals {
-            background: rgba(6, 182, 212, 0.3);
-            color: var(--primary);
-        }
-
-        .btn-zero {
-            grid-column: span 2;
-        }
-
+        /* ===== Unit / Currency ===== */
         .conversion-input {
-            width: 100%;
-            padding: 12px;
+            width: 100%; padding: 12px;
             border: 1px solid var(--border-dark);
             border-radius: 12px;
             background: var(--bg-dark-tertiary);
             color: var(--text-dark);
-            font-size: 14px;
-            margin-bottom: 16px;
+            font-size: 14px; margin-bottom: 16px;
         }
 
         .conversion-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            max-height: 400px;
-            overflow-y: auto;
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 12px; max-height: 400px; overflow-y: auto;
         }
 
         .conversion-item {
             background: rgba(6, 182, 212, 0.1);
             border: 1px solid var(--border-dark);
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
+            border-radius: 12px; padding: 12px; text-align: center;
         }
+        .conversion-label { font-size: 12px; color: var(--text-dark-secondary); margin-bottom: 4px; }
+        .conversion-value { font-size: 18px; font-weight: 700; color: var(--primary); font-family: 'Courier New', monospace; }
 
-        .conversion-label {
-            font-size: 12px;
-            color: var(--text-dark-secondary);
-            margin-bottom: 4px;
-        }
-
-        .conversion-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary);
-            font-family: 'Courier New', monospace;
-        }
-
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
 
         .refresh-btn {
             padding: 8px 12px;
             background: var(--bg-dark-tertiary);
             border: 1px solid var(--border-dark);
+            border-radius: 8px; color: var(--text-dark);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .refresh-btn:hover { background: var(--primary); }
+        .update-time { font-size: 11px; color: var(--text-dark-secondary); text-align: center; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-dark-secondary); }
+
+        h3, h4 { color: var(--text-dark); }
+
+        /* ===== Formula library ===== */
+        .formula-cats {
+            display: flex; gap: 6px;
+            margin-bottom: 12px; flex-wrap: wrap;
+        }
+        .fcbtn {
+            padding: 6px 10px;
+            border: 1px solid var(--border-dark);
             border-radius: 8px;
-            color: var(--text-dark);
-            cursor: pointer;
+            background: var(--bg-dark-tertiary);
+            color: var(--text-dark-secondary);
+            cursor: pointer; font-size: 11px; font-weight: 600;
             transition: all 0.2s;
         }
-
-        .refresh-btn:hover {
-            background: var(--primary);
+        .fcbtn.active {
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--primary);
+            border-color: var(--primary);
         }
+        .fcbtn:hover { color: var(--primary); }
 
-        .update-time {
-            font-size: 11px;
-            color: var(--text-dark-secondary);
-            text-align: center;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-dark-secondary);
-        }
-
-        h3, h4 {
-            color: var(--text-dark);
-        }
-
-        /* 公式庫樣式 */
-        .formula-search {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
+        .formula-search { display: flex; gap: 8px; margin-bottom: 12px; }
         .formula-search input {
-            flex: 1;
-            padding: 12px;
+            flex: 1; padding: 12px;
             border: 1px solid var(--border-dark);
             border-radius: 12px;
             background: var(--bg-dark-tertiary);
-            color: var(--text-dark);
-            font-size: 14px;
+            color: var(--text-dark); font-size: 14px;
         }
 
         .formula-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 20px;
+            display: flex; flex-direction: column; gap: 10px;
+            max-height: 360px; overflow-y: auto; margin-bottom: 20px;
         }
 
         .formula-item {
             background: rgba(6, 182, 212, 0.1);
             border: 1px solid var(--border-dark);
-            border-radius: 12px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
+            border-radius: 12px; padding: 12px;
+            cursor: pointer; transition: all 0.2s;
         }
-
-        .formula-item:hover {
-            background: rgba(6, 182, 212, 0.2);
-            transform: translateX(4px);
-        }
-
-        .formula-name {
-            font-weight: 600;
-            color: var(--primary);
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .formula-expr {
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            color: var(--text-dark-secondary);
-        }
-
+        .formula-item:hover { background: rgba(6, 182, 212, 0.2); transform: translateX(4px); }
+        .formula-name { font-weight: 600; color: var(--primary); font-size: 14px; margin-bottom: 4px; }
+        .formula-expr { font-family: 'Courier New', monospace; font-size: 12px; color: var(--text-dark-secondary); }
         .formula-category {
-            display: inline-block;
-            font-size: 10px;
-            background: rgba(6, 182, 212, 0.2);
-            color: var(--primary);
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-top: 4px;
+            display: inline-block; font-size: 10px;
+            background: rgba(6, 182, 212, 0.2); color: var(--primary);
+            padding: 2px 6px; border-radius: 4px; margin-top: 4px;
         }
+        .formula-group-badge {
+            display: inline-block; font-size: 10px;
+            padding: 2px 6px; border-radius: 4px; margin-top: 4px; margin-left: 4px;
+        }
+        .group-數學 { background: rgba(6, 182, 212, 0.15); color: var(--primary); }
+        .group-工程 { background: rgba(16, 185, 129, 0.15); color: var(--green); }
+        .group-科學 { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .group-物理 { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
 
         .section-title {
-            font-size: 14px;
-            font-weight: 700;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            font-size: 14px; font-weight: 700;
+            margin-top: 20px; margin-bottom: 10px;
             padding-bottom: 8px;
             border-bottom: 1px solid var(--border-dark);
             color: var(--primary);
@@ -379,232 +348,89 @@
         .add-formula-form {
             background: rgba(6, 182, 212, 0.1);
             border: 1px solid var(--border-dark);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 12px; padding: 16px;
         }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            margin-bottom: 4px;
-            color: var(--text-dark-secondary);
-        }
-
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; margin-bottom: 4px; color: var(--text-dark-secondary); }
         .form-group input {
-            width: 100%;
-            padding: 8px;
+            width: 100%; padding: 8px;
             border: 1px solid var(--border-dark);
             border-radius: 8px;
             background: var(--bg-dark-tertiary);
-            color: var(--text-dark);
-            font-size: 12px;
+            color: var(--text-dark); font-size: 12px;
         }
-
-        .form-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
+        .form-buttons { display: flex; gap: 8px; }
         .form-buttons button {
-            flex: 1;
-            padding: 8px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 12px;
-            transition: all 0.2s;
+            flex: 1; padding: 8px; border: none;
+            border-radius: 8px; cursor: pointer;
+            font-weight: 600; font-size: 12px; transition: all 0.2s;
         }
-
-        .btn-submit {
-            background: var(--green);
-            color: var(--bg-dark);
-        }
-
-        .btn-submit:hover {
-            opacity: 0.9;
-        }
-
-        .btn-cancel {
-            background: var(--bg-dark-tertiary);
-            color: var(--text-dark);
-        }
-
-        .btn-cancel:hover {
-            background: var(--red);
-        }
+        .btn-submit { background: var(--green); color: var(--bg-dark); }
+        .btn-submit:hover { opacity: 0.9; }
+        .btn-cancel { background: var(--bg-dark-tertiary); color: var(--text-dark); }
+        .btn-cancel:hover { background: var(--red); }
 
         .delete-formula-btn {
-            background: none;
-            border: none;
-            color: var(--red);
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.2s;
-            padding: 4px;
+            background: none; border: none; color: var(--red);
+            cursor: pointer; font-size: 16px; transition: all 0.2s; padding: 4px;
         }
+        .delete-formula-btn:hover { transform: scale(1.2); }
 
-        .delete-formula-btn:hover {
-            transform: scale(1.2);
-        }
+        .formula-item-custom { display: flex; justify-content: space-between; align-items: flex-start; }
+        .formula-item-content { flex: 1; }
 
-        .formula-item-custom {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .formula-item-content {
-            flex: 1;
-        }
-
-        /* Modal 樣式 */
+        /* ===== Modal ===== */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1000;
+            align-items: center; justify-content: center;
         }
-
-        .modal.active {
-            display: flex;
-        }
-
+        .modal.active { display: flex; }
         .modal-content {
             background: var(--bg-dark-secondary);
             border: 1px solid var(--border-dark);
-            border-radius: 16px;
-            padding: 24px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
+            border-radius: 16px; padding: 24px;
+            max-width: 500px; width: 90%;
+            max-height: 80vh; overflow-y: auto;
         }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: var(--primary);
-        }
-
-        .modal-formula {
-            font-size: 12px;
-            color: var(--text-dark-secondary);
-            margin-bottom: 16px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .modal-variables {
-            margin-bottom: 16px;
-        }
-
-        .variable-input {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .variable-input label {
-            min-width: 40px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
+        .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--primary); }
+        .modal-formula { font-size: 12px; color: var(--text-dark-secondary); margin-bottom: 16px; font-family: 'Courier New', monospace; }
+        .modal-variables { margin-bottom: 16px; }
+        .variable-input { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .variable-input label { min-width: 40px; font-weight: 600; color: var(--primary); }
         .variable-input input {
-            flex: 1;
-            padding: 8px;
+            flex: 1; padding: 8px;
             border: 1px solid var(--border-dark);
             border-radius: 8px;
-            background: var(--bg-dark-tertiary);
-            color: var(--text-dark);
+            background: var(--bg-dark-tertiary); color: var(--text-dark);
         }
+        .modal-buttons { display: flex; gap: 8px; }
+        .modal-buttons button { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .btn-calculate { background: var(--primary); color: var(--bg-dark); }
+        .btn-calculate:hover { opacity: 0.9; }
+        .btn-close-modal { background: var(--bg-dark-tertiary); color: var(--text-dark); }
+        .btn-close-modal:hover { background: var(--red); }
 
-        .modal-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .modal-buttons button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-calculate {
-            background: var(--primary);
-            color: var(--bg-dark);
-        }
-
-        .btn-calculate:hover {
-            opacity: 0.9;
-        }
-
-        .btn-close-modal {
-            background: var(--bg-dark-tertiary);
-            color: var(--text-dark);
-        }
-
-        .btn-close-modal:hover {
-            background: var(--red);
-        }
-
-        .saved-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
+        /* ===== Saved list ===== */
+        .saved-list { display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; }
         .saved-item {
             background: rgba(6, 182, 212, 0.1);
             border: 1px solid var(--border-dark);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-radius: 12px; padding: 12px;
+            display: flex; justify-content: space-between; align-items: center;
         }
+        .saved-formula { font-family: 'Courier New', monospace; font-size: 12px; color: var(--text-dark-secondary); }
+        .saved-result { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .delete-btn { background: none; border: none; color: var(--red); cursor: pointer; font-size: 18px; transition: all 0.2s; }
+        .delete-btn:hover { transform: scale(1.2); }
 
-        .saved-formula {
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            color: var(--text-dark-secondary);
-        }
-
-        .saved-result {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .delete-btn {
-            background: none;
-            border: none;
-            color: var(--red);
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.2s;
-        }
-
-        .delete-btn:hover {
-            transform: scale(1.2);
+        /* ===== Physics constants tooltip ===== */
+        .btn-constant[title] { position: relative; }
+        .const-label {
+            font-size: 9px; display: block;
+            color: rgba(167, 139, 250, 0.7);
+            margin-top: 2px; line-height: 1;
         }
     </style>
 </head>
@@ -631,6 +457,7 @@
                     <div class="display-formula" id="displayFormula"></div>
                 </div>
 
+                <!-- 主標籤 -->
                 <div class="tabs">
                     <button class="tab active" data-tab="calc" data-i18n="tab_calc">計算</button>
                     <button class="tab" data-tab="unit" data-i18n="tab_unit">單位</button>
@@ -639,18 +466,28 @@
                     <button class="tab" data-tab="saved"><span data-i18n="tab_saved">儲存</span> (<span id="savedCount">0</span>)</button>
                 </div>
 
-                <!-- 計算區 -->
+                <!-- ===== 計算區 ===== -->
                 <div id="calcPanel" class="tab-content">
-                    <div class="button-grid">
+                    <!-- 5 分類按鈕 -->
+                    <div class="calc-cats">
+                        <button class="calc-cat active" data-cat="math">數學</button>
+                        <button class="calc-cat" data-cat="eng">工程</button>
+                        <button class="calc-cat" data-cat="sci">科學</button>
+                        <button class="calc-cat" data-cat="phys">物理</button>
+                        <button class="calc-cat" data-cat="base">進位</button>
+                    </div>
+
+                    <!-- 數學 -->
+                    <div id="mathGrid" class="cat-panel button-grid">
                         <button class="btn btn-function">sin(</button>
                         <button class="btn btn-function">cos(</button>
                         <button class="btn btn-function">tan(</button>
-                        <button class="btn btn-delete" data-i18n="btn_clear">C</button>
+                        <button class="btn btn-delete">C</button>
 
                         <button class="btn btn-function">log(</button>
                         <button class="btn btn-function">ln(</button>
                         <button class="btn btn-function">√(</button>
-                        <button class="btn btn-delete" data-i18n="btn_backspace">←</button>
+                        <button class="btn btn-delete">←</button>
 
                         <button class="btn btn-operator">|</button>
                         <button class="btn btn-operator">^</button>
@@ -676,6 +513,174 @@
                         <button class="btn">.</button>
                         <button class="btn btn-equals">=</button>
                     </div>
+
+                    <!-- 工程 -->
+                    <div id="engGrid" class="cat-panel button-grid hidden">
+                        <button class="btn btn-function">exp(</button>
+                        <button class="btn btn-function">floor(</button>
+                        <button class="btn btn-function">ceil(</button>
+                        <button class="btn btn-delete">C</button>
+
+                        <button class="btn btn-function">abs(</button>
+                        <button class="btn btn-function">n!</button>
+                        <button class="btn btn-operator">mod</button>
+                        <button class="btn btn-delete">←</button>
+
+                        <button class="btn btn-function">π</button>
+                        <button class="btn btn-function">e</button>
+                        <button class="btn btn-operator">x²</button>
+                        <button class="btn btn-operator">÷</button>
+
+                        <button class="btn">7</button>
+                        <button class="btn">8</button>
+                        <button class="btn">9</button>
+                        <button class="btn btn-operator">×</button>
+
+                        <button class="btn">4</button>
+                        <button class="btn">5</button>
+                        <button class="btn">6</button>
+                        <button class="btn btn-operator">−</button>
+
+                        <button class="btn">1</button>
+                        <button class="btn">2</button>
+                        <button class="btn">3</button>
+                        <button class="btn btn-operator">+</button>
+
+                        <button class="btn btn-zero">0</button>
+                        <button class="btn">.</button>
+                        <button class="btn btn-equals">=</button>
+                    </div>
+
+                    <!-- 科學 -->
+                    <div id="sciGrid" class="cat-panel button-grid hidden">
+                        <button class="btn btn-function">asin(</button>
+                        <button class="btn btn-function">acos(</button>
+                        <button class="btn btn-function">atan(</button>
+                        <button class="btn btn-delete">C</button>
+
+                        <button class="btn btn-function">sinh(</button>
+                        <button class="btn btn-function">cosh(</button>
+                        <button class="btn btn-function">tanh(</button>
+                        <button class="btn btn-delete">←</button>
+
+                        <button class="btn btn-function">nCr(</button>
+                        <button class="btn btn-function">nPr(</button>
+                        <button class="btn btn-operator">EE</button>
+                        <button class="btn btn-operator">÷</button>
+
+                        <button class="btn">7</button>
+                        <button class="btn">8</button>
+                        <button class="btn">9</button>
+                        <button class="btn btn-operator">×</button>
+
+                        <button class="btn">4</button>
+                        <button class="btn">5</button>
+                        <button class="btn">6</button>
+                        <button class="btn btn-operator">−</button>
+
+                        <button class="btn">1</button>
+                        <button class="btn">2</button>
+                        <button class="btn">3</button>
+                        <button class="btn btn-operator">+</button>
+
+                        <button class="btn btn-zero">0</button>
+                        <button class="btn">.</button>
+                        <button class="btn btn-equals">=</button>
+                    </div>
+
+                    <!-- 物理 -->
+                    <div id="physGrid" class="cat-panel button-grid hidden">
+                        <button class="btn btn-constant" data-value="2.998e8" title="光速 c = 2.998×10⁸ m/s">c<span class="const-label">光速</span></button>
+                        <button class="btn btn-constant" data-value="9.80665" title="重力加速度 g = 9.80665 m/s²">g<span class="const-label">重力</span></button>
+                        <button class="btn btn-constant" data-value="6.626e-34" title="普朗克常數 h = 6.626×10⁻³⁴ J·s">h<span class="const-label">普朗克</span></button>
+                        <button class="btn btn-delete">C</button>
+
+                        <button class="btn btn-constant" data-value="1.381e-23" title="波茲曼常數 kB = 1.381×10⁻²³ J/K">kB<span class="const-label">波茲曼</span></button>
+                        <button class="btn btn-constant" data-value="6.674e-11" title="萬有引力常數 G = 6.674×10⁻¹¹ N·m²/kg²">G<span class="const-label">引力</span></button>
+                        <button class="btn btn-constant" data-value="6.022e23" title="阿伏加德羅常數 NA = 6.022×10²³ /mol">NA<span class="const-label">亞佛加厥</span></button>
+                        <button class="btn btn-delete">←</button>
+
+                        <button class="btn btn-constant" data-value="8.314" title="氣體常數 R = 8.314 J/(mol·K)">R<span class="const-label">氣體</span></button>
+                        <button class="btn btn-constant" data-value="1.602e-19" title="電子電荷 e = 1.602×10⁻¹⁹ C">ec<span class="const-label">電子電荷</span></button>
+                        <button class="btn btn-operator">^</button>
+                        <button class="btn btn-operator">÷</button>
+
+                        <button class="btn">7</button>
+                        <button class="btn">8</button>
+                        <button class="btn">9</button>
+                        <button class="btn btn-operator">×</button>
+
+                        <button class="btn">4</button>
+                        <button class="btn">5</button>
+                        <button class="btn">6</button>
+                        <button class="btn btn-operator">−</button>
+
+                        <button class="btn">1</button>
+                        <button class="btn">2</button>
+                        <button class="btn">3</button>
+                        <button class="btn btn-operator">+</button>
+
+                        <button class="btn btn-zero">0</button>
+                        <button class="btn">.</button>
+                        <button class="btn btn-equals">=</button>
+                    </div>
+
+                    <!-- 進位 -->
+                    <div id="baseGrid" class="cat-panel hidden">
+                        <div class="base-displays">
+                            <div class="base-row active-row" data-base="DEC">
+                                <span class="base-label">DEC</span>
+                                <span class="base-value" id="baseDec">0</span>
+                            </div>
+                            <div class="base-row" data-base="BIN">
+                                <span class="base-label">BIN</span>
+                                <span class="base-value" id="baseBin">0</span>
+                            </div>
+                            <div class="base-row" data-base="OCT">
+                                <span class="base-label">OCT</span>
+                                <span class="base-value" id="baseOct">0</span>
+                            </div>
+                            <div class="base-row" data-base="HEX">
+                                <span class="base-label">HEX</span>
+                                <span class="base-value" id="baseHex">0</span>
+                            </div>
+                        </div>
+                        <div class="base-modes">
+                            <button class="base-mode active" data-mode="DEC">DEC</button>
+                            <button class="base-mode" data-mode="BIN">BIN</button>
+                            <button class="base-mode" data-mode="OCT">OCT</button>
+                            <button class="base-mode" data-mode="HEX">HEX</button>
+                        </div>
+                        <div class="button-grid" id="baseButtons">
+                            <button class="btn btn-function btn-base" data-digit="A" disabled>A</button>
+                            <button class="btn btn-function btn-base" data-digit="B" disabled>B</button>
+                            <button class="btn btn-delete btn-base" data-digit="CLR">CLR</button>
+                            <button class="btn btn-delete btn-base" data-digit="←">←</button>
+
+                            <button class="btn btn-function btn-base" data-digit="D" disabled>D</button>
+                            <button class="btn btn-function btn-base" data-digit="E" disabled>E</button>
+                            <button class="btn btn-function btn-base" data-digit="F" disabled>F</button>
+                            <button class="btn btn-spacer btn-base"></button>
+
+                            <button class="btn btn-base" data-digit="7">7</button>
+                            <button class="btn btn-base" data-digit="8">8</button>
+                            <button class="btn btn-base" data-digit="9">9</button>
+                            <button class="btn btn-spacer btn-base"></button>
+
+                            <button class="btn btn-base" data-digit="4">4</button>
+                            <button class="btn btn-base" data-digit="5">5</button>
+                            <button class="btn btn-base" data-digit="6">6</button>
+                            <button class="btn btn-spacer btn-base"></button>
+
+                            <button class="btn btn-base" data-digit="1">1</button>
+                            <button class="btn btn-base" data-digit="2">2</button>
+                            <button class="btn btn-base" data-digit="3">3</button>
+                            <button class="btn btn-spacer btn-base"></button>
+
+                            <button class="btn btn-zero btn-base" data-digit="0">0</button>
+                            <button class="btn btn-spacer btn-base"></button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 單位轉換 -->
@@ -696,10 +701,19 @@
 
                 <!-- 公式庫 -->
                 <div id="formulaPanel" class="tab-content hidden">
+                    <!-- 公式分類篩選 -->
+                    <div class="formula-cats">
+                        <button class="fcbtn active" data-fcat="all">全部</button>
+                        <button class="fcbtn" data-fcat="數學">數學</button>
+                        <button class="fcbtn" data-fcat="工程">工程</button>
+                        <button class="fcbtn" data-fcat="科學">科學</button>
+                        <button class="fcbtn" data-fcat="物理">物理</button>
+                    </div>
+
                     <div class="formula-search">
                         <input type="text" id="formulaSearch" placeholder="搜索公式..." data-i18n-placeholder="search_formula_placeholder">
                     </div>
-                    
+
                     <div style="margin-bottom: 16px;">
                         <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--primary);" data-i18n="formula_builtin">內建公式</div>
                         <div class="formula-list" id="formulaList"></div>
@@ -735,7 +749,6 @@
 
             <!-- 側邊欄 -->
             <div style="display: flex; flex-direction: column; gap: 20px;">
-                <!-- 常用按鈕 -->
                 <div class="panel">
                     <h3 style="margin-bottom: 16px; font-size: 18px;" data-i18n="sidebar_common">常用按鈕</h3>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px;">
@@ -746,16 +759,17 @@
                     </div>
                     <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-dark); border-radius: 12px; padding: 12px;">
                         <h4 style="font-size: 12px; margin-bottom: 8px; color: var(--text-dark-secondary);" data-i18n="sidebar_functions">支援函數</h4>
-                        <div style="font-size: 11px; color: var(--text-dark-secondary); line-height: 1.6;">
-                            • sin, cos, tan<br>
-                            • log, ln, exp<br>
-                            • sqrt (√), abs (|)<br>
-                            • π, e, ^ (次方)
+                        <div style="font-size: 11px; color: var(--text-dark-secondary); line-height: 1.8;">
+                            • sin, cos, tan / asin, acos, atan<br>
+                            • sinh, cosh, tanh<br>
+                            • log, ln, exp, sqrt (√)<br>
+                            • floor, ceil, abs (|)<br>
+                            • nCr(n,r), nPr(n,r), n!<br>
+                            • π, e, ^ (次方), EE (科學記號)
                         </div>
                     </div>
                 </div>
 
-                <!-- 即時匯率 -->
                 <div class="panel">
                     <h3 style="margin-bottom: 12px; font-size: 16px;" data-i18n="sidebar_rate">即時匯率<br><span style="font-size: 12px; color: var(--text-dark-secondary);">(<span data-i18n="rate_unit">1 TWD</span>)</span></h3>
                     <div id="quickRate"></div>
@@ -782,243 +796,145 @@
         // ========== 多語系翻譯 ==========
         const i18n = {
             'zh-TW': {
-                tab_calc: '計算',
-                tab_unit: '單位',
-                tab_currency: '匯率',
-                tab_formula: '公式',
-                tab_saved: '儲存',
-                btn_clear: 'C',
-                btn_backspace: '←',
-                btn_add: '新增',
-                sidebar_common: '常用按鈕',
-                sidebar_functions: '支援函數',
-                sidebar_rate: '即時匯率',
-                rate_unit: '1 TWD',
-                formula_builtin: '內建公式',
-                formula_custom: '自建公式',
-                formula_name: '公式名稱',
-                formula_expr: '公式表達式',
-                formula_category: '分類',
+                tab_calc: '計算', tab_unit: '單位', tab_currency: '匯率',
+                tab_formula: '公式', tab_saved: '儲存',
+                btn_clear: 'C', btn_backspace: '←', btn_add: '新增',
+                sidebar_common: '常用按鈕', sidebar_functions: '支援函數',
+                sidebar_rate: '即時匯率', rate_unit: '1 TWD',
+                formula_builtin: '內建公式', formula_custom: '自建公式',
+                formula_name: '公式名稱', formula_expr: '公式表達式', formula_category: '分類',
                 search_formula_placeholder: '搜索公式（名稱、變數、類別）...',
-                empty_saved: '還沒有儲存的公式',
-                empty_formula: '沒有找到匹配的公式',
+                empty_saved: '還沒有儲存的公式', empty_formula: '沒有找到匹配的公式',
                 update_time: '更新:',
-                currency_names: {
-                    'USD': '美元',
-                    'JPY': '日圓',
-                    'EUR': '歐元',
-                    'GBP': '英鎊',
-                    'AUD': '澳元',
-                    'CAD': '加拿大元',
-                    'CNY': '人民幣',
-                    'SGD': '新加坡元',
-                    'HKD': '港幣',
-                    'THB': '泰銖',
-                    'KRW': '韓圓'
-                },
-                unit_conversions: {
-                    'm→ft': 'm→ft',
-                    'ft→m': 'ft→m',
-                    'km→mi': 'km→mi',
-                    'mi→km': 'mi→km',
-                    'kg→lb': 'kg→lb',
-                    'lb→kg': 'lb→kg',
-                    'C→F': '°C→°F',
-                    'F→C': '°F→°C'
-                }
+                currency_names: { 'USD':'美元','JPY':'日圓','EUR':'歐元','GBP':'英鎊','AUD':'澳元','CAD':'加拿大元','CNY':'人民幣','SGD':'新加坡元','HKD':'港幣','THB':'泰銖','KRW':'韓圓' },
+                unit_conversions: { 'm→ft':'m→ft','ft→m':'ft→m','km→mi':'km→mi','mi→km':'mi→km','kg→lb':'kg→lb','lb→kg':'lb→kg','C→F':'°C→°F','F→C':'°F→°C' }
             },
             'en': {
-                tab_calc: 'Calc',
-                tab_unit: 'Unit',
-                tab_currency: 'Exchange',
-                tab_formula: 'Formula',
-                tab_saved: 'Saved',
-                btn_clear: 'C',
-                btn_backspace: '←',
-                btn_add: 'Add',
-                sidebar_common: 'Quick Button',
-                sidebar_functions: 'Functions',
-                sidebar_rate: 'Exchange Rate',
-                rate_unit: '1 TWD',
-                formula_builtin: 'Built-in Formula',
-                formula_custom: 'Custom Formula',
-                formula_name: 'Formula Name',
-                formula_expr: 'Expression',
-                formula_category: 'Category',
+                tab_calc: 'Calc', tab_unit: 'Unit', tab_currency: 'Exchange',
+                tab_formula: 'Formula', tab_saved: 'Saved',
+                btn_clear: 'C', btn_backspace: '←', btn_add: 'Add',
+                sidebar_common: 'Quick Button', sidebar_functions: 'Functions',
+                sidebar_rate: 'Exchange Rate', rate_unit: '1 TWD',
+                formula_builtin: 'Built-in Formula', formula_custom: 'Custom Formula',
+                formula_name: 'Formula Name', formula_expr: 'Expression', formula_category: 'Category',
                 search_formula_placeholder: 'Search formula (name, variable, category)...',
-                empty_saved: 'No saved formulas',
-                empty_formula: 'No matching formulas found',
+                empty_saved: 'No saved formulas', empty_formula: 'No matching formulas found',
                 update_time: 'Updated:',
-                currency_names: {
-                    'USD': 'US Dollar',
-                    'JPY': 'Japanese Yen',
-                    'EUR': 'Euro',
-                    'GBP': 'British Pound',
-                    'AUD': 'Australian Dollar',
-                    'CAD': 'Canadian Dollar',
-                    'CNY': 'Chinese Yuan',
-                    'SGD': 'Singapore Dollar',
-                    'HKD': 'Hong Kong Dollar',
-                    'THB': 'Thai Baht',
-                    'KRW': 'South Korean Won'
-                },
-                unit_conversions: {
-                    'm→ft': 'm→ft',
-                    'ft→m': 'ft→m',
-                    'km→mi': 'km→mi',
-                    'mi→km': 'mi→km',
-                    'kg→lb': 'kg→lb',
-                    'lb→kg': 'lb→kg',
-                    'C→F': '°C→°F',
-                    'F→C': '°F→°C'
-                }
+                currency_names: { 'USD':'US Dollar','JPY':'Japanese Yen','EUR':'Euro','GBP':'British Pound','AUD':'Australian Dollar','CAD':'Canadian Dollar','CNY':'Chinese Yuan','SGD':'Singapore Dollar','HKD':'Hong Kong Dollar','THB':'Thai Baht','KRW':'South Korean Won' },
+                unit_conversions: { 'm→ft':'m→ft','ft→m':'ft→m','km→mi':'km→mi','mi→km':'mi→km','kg→lb':'kg→lb','lb→kg':'lb→kg','C→F':'°C→°F','F→C':'°F→°C' }
             },
             'zh-CN': {
-                tab_calc: '计算',
-                tab_unit: '单位',
-                tab_currency: '汇率',
-                tab_formula: '公式',
-                tab_saved: '保存',
-                btn_clear: 'C',
-                btn_backspace: '←',
-                btn_add: '添加',
-                sidebar_common: '常用按钮',
-                sidebar_functions: '支持函数',
-                sidebar_rate: '实时汇率',
-                rate_unit: '1 TWD',
-                formula_builtin: '内置公式',
-                formula_custom: '自建公式',
-                formula_name: '公式名称',
-                formula_expr: '公式表达式',
-                formula_category: '分类',
+                tab_calc: '计算', tab_unit: '单位', tab_currency: '汇率',
+                tab_formula: '公式', tab_saved: '保存',
+                btn_clear: 'C', btn_backspace: '←', btn_add: '添加',
+                sidebar_common: '常用按钮', sidebar_functions: '支持函数',
+                sidebar_rate: '实时汇率', rate_unit: '1 TWD',
+                formula_builtin: '内置公式', formula_custom: '自建公式',
+                formula_name: '公式名称', formula_expr: '公式表达式', formula_category: '分类',
                 search_formula_placeholder: '搜索公式（名称、变量、分类）...',
-                empty_saved: '没有保存的公式',
-                empty_formula: '没有找到匹配的公式',
+                empty_saved: '没有保存的公式', empty_formula: '没有找到匹配的公式',
                 update_time: '更新:',
-                currency_names: {
-                    'USD': '美元',
-                    'JPY': '日圆',
-                    'EUR': '欧元',
-                    'GBP': '英镑',
-                    'AUD': '澳元',
-                    'CAD': '加拿大元',
-                    'CNY': '人民币',
-                    'SGD': '新加坡元',
-                    'HKD': '港币',
-                    'THB': '泰铢',
-                    'KRW': '韩圆'
-                },
-                unit_conversions: {
-                    'm→ft': 'm→ft',
-                    'ft→m': 'ft→m',
-                    'km→mi': 'km→mi',
-                    'mi→km': 'mi→km',
-                    'kg→lb': 'kg→lb',
-                    'lb→kg': 'lb→kg',
-                    'C→F': '°C→°F',
-                    'F→C': '°F→°C'
-                }
+                currency_names: { 'USD':'美元','JPY':'日圆','EUR':'欧元','GBP':'英镑','AUD':'澳元','CAD':'加拿大元','CNY':'人民币','SGD':'新加坡元','HKD':'港币','THB':'泰铢','KRW':'韩圆' },
+                unit_conversions: { 'm→ft':'m→ft','ft→m':'ft→m','km→mi':'km→mi','mi→km':'mi→km','kg→lb':'kg→lb','lb→kg':'lb→kg','C→F':'°C→°F','F→C':'°F→°C' }
             },
             'ja': {
-                tab_calc: '計算',
-                tab_unit: '単位',
-                tab_currency: 'レート',
-                tab_formula: '公式',
-                tab_saved: '保存',
-                btn_clear: 'C',
-                btn_backspace: '←',
-                btn_add: '追加',
-                sidebar_common: 'よく使う',
-                sidebar_functions: 'サポート機能',
-                sidebar_rate: 'レート',
-                rate_unit: '1 TWD',
-                formula_builtin: '組込公式',
-                formula_custom: 'カスタム公式',
-                formula_name: '公式名',
-                formula_expr: '式',
-                formula_category: 'カテゴリ',
+                tab_calc: '計算', tab_unit: '単位', tab_currency: 'レート',
+                tab_formula: '公式', tab_saved: '保存',
+                btn_clear: 'C', btn_backspace: '←', btn_add: '追加',
+                sidebar_common: 'よく使う', sidebar_functions: 'サポート機能',
+                sidebar_rate: 'レート', rate_unit: '1 TWD',
+                formula_builtin: '組込公式', formula_custom: 'カスタム公式',
+                formula_name: '公式名', formula_expr: '式', formula_category: 'カテゴリ',
                 search_formula_placeholder: '公式を検索（名前、変数、カテゴリ）...',
-                empty_saved: '保存された式がありません',
-                empty_formula: '一致する公式が見つかりません',
+                empty_saved: '保存された式がありません', empty_formula: '一致する公式が見つかりません',
                 update_time: '更新:',
-                currency_names: {
-                    'USD': '米ドル',
-                    'JPY': '日本円',
-                    'EUR': 'ユーロ',
-                    'GBP': 'ポンド',
-                    'AUD': 'オーストラリアドル',
-                    'CAD': 'カナダドル',
-                    'CNY': '人民元',
-                    'SGD': 'シンガポールドル',
-                    'HKD': '香港ドル',
-                    'THB': 'タイバーツ',
-                    'KRW': 'ウォン'
-                },
-                unit_conversions: {
-                    'm→ft': 'm→ft',
-                    'ft→m': 'ft→m',
-                    'km→mi': 'km→mi',
-                    'mi→km': 'mi→km',
-                    'kg→lb': 'kg→lb',
-                    'lb→kg': 'lb→kg',
-                    'C→F': '°C→°F',
-                    'F→C': '°F→°C'
-                }
+                currency_names: { 'USD':'米ドル','JPY':'日本円','EUR':'ユーロ','GBP':'ポンド','AUD':'オーストラリアドル','CAD':'カナダドル','CNY':'人民元','SGD':'シンガポールドル','HKD':'香港ドル','THB':'タイバーツ','KRW':'ウォン' },
+                unit_conversions: { 'm→ft':'m→ft','ft→m':'ft→m','km→mi':'km→mi','mi→km':'mi→km','kg→lb':'kg→lb','lb→kg':'lb→kg','C→F':'°C→°F','F→C':'°F→°C' }
             }
         };
 
-        // ========== 內建公式庫（數學） ==========
+        // ========== 公式庫 ==========
         const builtInFormulas = [
-            { id: 1, name: '圓的面積', expr: 'π*r^2', vars: ['r'], category: '面積' },
-            { id: 2, name: '矩形面積', expr: 'l*w', vars: ['l', 'w'], category: '面積' },
-            { id: 3, name: '三角形面積', expr: '0.5*b*h', vars: ['b', 'h'], category: '面積' },
-            { id: 4, name: '梯形面積', expr: '0.5*(a+b)*h', vars: ['a', 'b', 'h'], category: '面積' },
-            { id: 5, name: '圓的周長', expr: '2*π*r', vars: ['r'], category: '周長' },
-            { id: 6, name: '矩形周長', expr: '2*(l+w)', vars: ['l', 'w'], category: '周長' },
-            { id: 7, name: '球的體積', expr: '(4/3)*π*r^3', vars: ['r'], category: '體積' },
-            { id: 8, name: '圓柱體積', expr: 'π*r^2*h', vars: ['r', 'h'], category: '體積' },
-            { id: 9, name: '直方體體積', expr: 'l*w*h', vars: ['l', 'w', 'h'], category: '體積' },
-            { id: 10, name: '圓錐體積', expr: '(1/3)*π*r^2*h', vars: ['r', 'h'], category: '體積' },
-            { id: 11, name: '勾股定理', expr: 'sqrt(a^2+b^2)', vars: ['a', 'b'], category: '三角形' },
-            { id: 12, name: '三角形周長', expr: 'a+b+c', vars: ['a', 'b', 'c'], category: '三角形' },
-            { id: 13, name: '平均值', expr: '(x1+x2)/2', vars: ['x1', 'x2'], category: '統計' },
-            { id: 14, name: '百分比', expr: '(part/whole)*100', vars: ['part', 'whole'], category: '統計' },
-            { id: 15, name: '平方', expr: 'x^2', vars: ['x'], category: '代數' },
-            { id: 16, name: '立方', expr: 'x^3', vars: ['x'], category: '代數' },
-            { id: 17, name: '平方根', expr: 'sqrt(x)', vars: ['x'], category: '代數' },
-            { id: 18, name: '立方根', expr: 'x^(1/3)', vars: ['x'], category: '代數' },
-            { id: 19, name: '指數', expr: 'e^x', vars: ['x'], category: '指數對數' },
-            { id: 20, name: '自然對數', expr: 'Math.log(x)', vars: ['x'], category: '指數對數' },
-            { id: 21, name: '常用對數', expr: 'Math.log10(x)', vars: ['x'], category: '指數對數' },
-            { id: 22, name: '一次函數', expr: 'a*x+b', vars: ['x', 'a', 'b'], category: '函數' },
-            { id: 23, name: '二次函數', expr: 'a*x^2+b*x+c', vars: ['x', 'a', 'b', 'c'], category: '函數' },
-            { id: 24, name: '二次方程判別式', expr: 'b^2-4*a*c', vars: ['a', 'b', 'c'], category: '函數' },
-            { id: 25, name: '兩點距離', expr: 'sqrt((x2-x1)^2+(y2-y1)^2)', vars: ['x1', 'y1', 'x2', 'y2'], category: '座標' },
+            // 數學 — 面積/周長/體積
+            { id: 1,  name: '圓的面積',    expr: 'π*r^2',               vars: ['r'],                   category: '面積',   group: '數學' },
+            { id: 2,  name: '矩形面積',    expr: 'l*w',                  vars: ['l','w'],               category: '面積',   group: '數學' },
+            { id: 3,  name: '三角形面積',  expr: '0.5*b*h',              vars: ['b','h'],               category: '面積',   group: '數學' },
+            { id: 4,  name: '梯形面積',    expr: '0.5*(a+b)*h',          vars: ['a','b','h'],           category: '面積',   group: '數學' },
+            { id: 5,  name: '圓的周長',    expr: '2*π*r',                vars: ['r'],                   category: '周長',   group: '數學' },
+            { id: 6,  name: '矩形周長',    expr: '2*(l+w)',              vars: ['l','w'],               category: '周長',   group: '數學' },
+            { id: 7,  name: '球的體積',    expr: '(4/3)*π*r^3',          vars: ['r'],                   category: '體積',   group: '數學' },
+            { id: 8,  name: '圓柱體積',    expr: 'π*r^2*h',              vars: ['r','h'],               category: '體積',   group: '數學' },
+            { id: 9,  name: '直方體體積',  expr: 'l*w*h',                vars: ['l','w','h'],           category: '體積',   group: '數學' },
+            { id: 10, name: '圓錐體積',    expr: '(1/3)*π*r^2*h',        vars: ['r','h'],               category: '體積',   group: '數學' },
+            { id: 11, name: '勾股定理',    expr: 'sqrt(a^2+b^2)',         vars: ['a','b'],               category: '三角形', group: '數學' },
+            { id: 12, name: '三角形周長',  expr: 'a+b+c',                vars: ['a','b','c'],           category: '三角形', group: '數學' },
+            { id: 13, name: '平均值',      expr: '(x1+x2)/2',            vars: ['x1','x2'],             category: '統計',   group: '數學' },
+            { id: 14, name: '百分比',      expr: '(part/whole)*100',      vars: ['part','whole'],        category: '統計',   group: '數學' },
+            { id: 15, name: '平方',        expr: 'x^2',                  vars: ['x'],                   category: '代數',   group: '數學' },
+            { id: 16, name: '立方',        expr: 'x^3',                  vars: ['x'],                   category: '代數',   group: '數學' },
+            { id: 17, name: '平方根',      expr: 'sqrt(x)',              vars: ['x'],                   category: '代數',   group: '數學' },
+            { id: 18, name: '立方根',      expr: 'x^(1/3)',              vars: ['x'],                   category: '代數',   group: '數學' },
+            { id: 19, name: '指數',        expr: 'e^x',                  vars: ['x'],                   category: '指數',   group: '數學' },
+            { id: 20, name: '自然對數',    expr: 'ln(x)',                vars: ['x'],                   category: '對數',   group: '數學' },
+            { id: 21, name: '常用對數',    expr: 'log(x)',               vars: ['x'],                   category: '對數',   group: '數學' },
+            { id: 22, name: '一次函數',    expr: 'a*x+b',                vars: ['x','a','b'],           category: '函數',   group: '數學' },
+            { id: 23, name: '二次函數',    expr: 'a*x^2+b*x+c',          vars: ['x','a','b','c'],       category: '函數',   group: '數學' },
+            { id: 24, name: '判別式',      expr: 'b^2-4*a*c',            vars: ['a','b','c'],           category: '函數',   group: '數學' },
+            { id: 25, name: '兩點距離',    expr: 'sqrt((x2-x1)^2+(y2-y1)^2)', vars: ['x1','y1','x2','y2'], category: '座標', group: '數學' },
+
+            // 工程
+            { id: 30, name: '歐姆定律',      expr: 'I*R',                    vars: ['I','R'],             category: '電學',  group: '工程' },
+            { id: 31, name: '電功率',         expr: 'V*I',                    vars: ['V','I'],             category: '電學',  group: '工程' },
+            { id: 32, name: '電阻串聯',       expr: 'R1+R2+R3',               vars: ['R1','R2','R3'],      category: '電學',  group: '工程' },
+            { id: 33, name: '電阻並聯(2)',    expr: '(R1*R2)/(R1+R2)',        vars: ['R1','R2'],           category: '電學',  group: '工程' },
+            { id: 34, name: 'RC時間常數',    expr: 'R*C',                    vars: ['R','C'],             category: '電學',  group: '工程' },
+            { id: 35, name: '電容能量',       expr: '0.5*C*V^2',              vars: ['C','V'],             category: '電學',  group: '工程' },
+            { id: 36, name: '分貝(電壓)',     expr: '20*log(V/V0)',           vars: ['V','V0'],            category: '信號',  group: '工程' },
+            { id: 37, name: '機械功',         expr: 'F*d',                    vars: ['F','d'],             category: '力學',  group: '工程' },
+            { id: 38, name: '機械效率',       expr: '(Pout/Pin)*100',         vars: ['Pout','Pin'],        category: '力學',  group: '工程' },
+            { id: 39, name: '複利終值',       expr: 'P*(1+r/n)^(n*t)',        vars: ['P','r','n','t'],     category: '財務',  group: '工程' },
+            { id: 40, name: '月繳貸款',       expr: 'P*r*(1+r)^n/((1+r)^n-1)', vars: ['P','r','n'],       category: '財務',  group: '工程' },
+
+            // 科學
+            { id: 50, name: '理想氣體(壓力)', expr: 'n*8.314*T/V',            vars: ['n','T','V'],         category: '化學',  group: '科學' },
+            { id: 51, name: '莫耳數',          expr: 'm/M',                    vars: ['m','M'],             category: '化學',  group: '科學' },
+            { id: 52, name: '莫耳濃度',        expr: 'n/V',                    vars: ['n','V'],             category: '化學',  group: '科學' },
+            { id: 53, name: 'pH值',            expr: '-log(H)',                vars: ['H'],                 category: '化學',  group: '科學' },
+            { id: 54, name: '稀釋方程',        expr: 'C1*V1/V2',               vars: ['C1','V1','V2'],      category: '化學',  group: '科學' },
+            { id: 55, name: '密度',            expr: 'm/V',                    vars: ['m','V'],             category: '化學',  group: '科學' },
+            { id: 56, name: '化學產率',        expr: '(actual/theoretical)*100', vars: ['actual','theoretical'], category: '化學', group: '科學' },
+            { id: 57, name: '波耳模型能量',    expr: '-13.6/n^2',              vars: ['n'],                 category: '量子',  group: '科學' },
+
+            // 物理
+            { id: 70, name: '牛頓第二定律',   expr: 'm*a',                    vars: ['m','a'],             category: '力學',  group: '物理' },
+            { id: 71, name: '動能',            expr: '0.5*m*v^2',              vars: ['m','v'],             category: '力學',  group: '物理' },
+            { id: 72, name: '重力位能',        expr: 'm*9.80665*h',            vars: ['m','h'],             category: '力學',  group: '物理' },
+            { id: 73, name: '動量',            expr: 'm*v',                    vars: ['m','v'],             category: '力學',  group: '物理' },
+            { id: 74, name: '均速',            expr: 'd/t',                    vars: ['d','t'],             category: '力學',  group: '物理' },
+            { id: 75, name: '自由落體高度',    expr: '0.5*9.80665*t^2',        vars: ['t'],                 category: '力學',  group: '物理' },
+            { id: 76, name: '波速',            expr: 'f*lambda',               vars: ['f','lambda'],        category: '波動',  group: '物理' },
+            { id: 77, name: '熱量',            expr: 'm*c*dT',                 vars: ['m','c','dT'],        category: '熱學',  group: '物理' },
+            { id: 78, name: '庫倫力',          expr: '8.99e9*q1*q2/r^2',       vars: ['q1','q2','r'],       category: '電磁',  group: '物理' },
+            { id: 79, name: '萬有引力',        expr: '6.674e-11*m1*m2/r^2',    vars: ['m1','m2','r'],       category: '引力',  group: '物理' },
+            { id: 80, name: '電場強度',        expr: 'F/q',                    vars: ['F','q'],             category: '電磁',  group: '物理' },
+            { id: 81, name: '歐姆定律(電壓)',  expr: 'I*R',                    vars: ['I','R'],             category: '電磁',  group: '物理' },
         ];
 
         // ========== 應用狀態 ==========
         let currentDisplay = '0';
+        let currentCalcCat = 'math';
+        let currentFormulaCat = 'all';
+        let baseInput = '0';
+        let baseMode = 'DEC';
         let savedFormulas = JSON.parse(localStorage.getItem('savedFormulas')) || [];
         let customFormulas = JSON.parse(localStorage.getItem('customFormulas')) || [];
         let exchangeRates = JSON.parse(localStorage.getItem('exchangeRates')) || {};
         let isDarkMode = localStorage.getItem('theme') !== 'light';
         let currentLanguage = localStorage.getItem('language') || 'zh-TW';
 
-        const currencyList = {
-            'USD': '美元',
-            'JPY': '日圓',
-            'EUR': '歐元',
-            'GBP': '英鎊',
-            'AUD': '澳元',
-            'CAD': '加拿大元',
-            'CNY': '人民幣',
-            'SGD': '新加坡元',
-            'HKD': '港幣',
-            'THB': '泰銖',
-            'KRW': '韓圓'
-        };
+        const currencyList = { 'USD':'美元','JPY':'日圓','EUR':'歐元','GBP':'英鎊','AUD':'澳元','CAD':'加拿大元','CNY':'人民幣','SGD':'新加坡元','HKD':'港幣','THB':'泰銖','KRW':'韓圓' };
 
-        // ========== DOM 元素 ==========
+        // ========== DOM ==========
         const display = document.getElementById('display');
         const displayFormula = document.getElementById('displayFormula');
         const themeBtn = document.getElementById('themeBtn');
@@ -1041,7 +957,7 @@
         const savedList = document.getElementById('savedList');
         const savedCount = document.getElementById('savedCount');
 
-        // ========== 初始化 ==========
+        // ========== Init ==========
         function init() {
             updateDisplay();
             updateTheme();
@@ -1051,38 +967,36 @@
             renderCustomFormulas();
             fetchExchangeRates();
             attachEventListeners();
+            initCalcCats();
+            initFormulaCats();
+            initBaseModes();
+            initBaseRows();
         }
 
-        // ========== 多語系管理 ==========
+        // ========== i18n ==========
         function t(key, fallback = '') {
             const keys = key.split('.');
             let value = i18n[currentLanguage];
-            for (let k of keys) {
-                value = value?.[k];
-            }
+            for (let k of keys) value = value?.[k];
             return value || fallback || key;
         }
 
         function updateLanguage(lang) {
             currentLanguage = lang;
             localStorage.setItem('language', lang);
-            
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
                 el.textContent = t(key, el.textContent);
             });
-
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.dataset.i18nPlaceholder;
                 el.placeholder = t(key, el.placeholder);
             });
         }
 
-        langSelector.addEventListener('change', (e) => {
-            updateLanguage(e.target.value);
-        });
+        langSelector.addEventListener('change', e => updateLanguage(e.target.value));
 
-        // ========== 主題切換 ==========
+        // ========== Theme ==========
         function updateTheme() {
             if (isDarkMode) {
                 document.body.classList.remove('light');
@@ -1093,48 +1007,98 @@
             }
             localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
         }
+        themeBtn.addEventListener('click', () => { isDarkMode = !isDarkMode; updateTheme(); });
 
-        themeBtn.addEventListener('click', () => {
-            isDarkMode = !isDarkMode;
-            updateTheme();
-        });
-
-        // ========== 計算邏輯 ==========
-        function updateDisplay() {
-            display.textContent = currentDisplay;
-        }
+        // ========== Calculate ==========
+        function updateDisplay() { display.textContent = currentDisplay; }
 
         function calculate(expr) {
+            function factorial(n) {
+                if (n < 0 || !Number.isInteger(n)) return NaN;
+                if (n === 0 || n === 1) return 1;
+                let r = 1;
+                for (let i = 2; i <= n; i++) r *= i;
+                return r;
+            }
+            function nCr(n, r) {
+                if (r > n || r < 0) return 0;
+                return factorial(n) / (factorial(r) * factorial(n - r));
+            }
+            function nPr(n, r) {
+                if (r > n || r < 0) return 0;
+                return factorial(n) / factorial(n - r);
+            }
+
             try {
                 const processed = expr
                     .replace(/π/g, Math.PI)
-                    .replace(/e/g, Math.E)
+                    .replace(/(?<![a-zA-Z])e(?![a-zA-Z0-9])/g, Math.E)
                     .replace(/√/g, 'Math.sqrt')
                     .replace(/\^/g, '**')
                     .replace(/÷/g, '/')
                     .replace(/×/g, '*')
                     .replace(/−/g, '-')
-                    .replace(/sin\(/g, 'Math.sin(')
-                    .replace(/cos\(/g, 'Math.cos(')
-                    .replace(/tan\(/g, 'Math.tan(')
-                    .replace(/log\(/g, 'Math.log10(')
-                    .replace(/log10\(/g, 'Math.log10(')
+                    // arc functions first (before sin/cos/tan)
+                    .replace(/asin\(/g, 'Math.asin(')
+                    .replace(/acos\(/g, 'Math.acos(')
+                    .replace(/atan\(/g, 'Math.atan(')
+                    // hyperbolic
+                    .replace(/sinh\(/g, 'Math.sinh(')
+                    .replace(/cosh\(/g, 'Math.cosh(')
+                    .replace(/tanh\(/g, 'Math.tanh(')
+                    // trig (after arc & hyp to avoid substring collision)
+                    .replace(/(?<![a-z])sin\(/g, 'Math.sin(')
+                    .replace(/(?<![a-z])cos\(/g, 'Math.cos(')
+                    .replace(/(?<![a-z])tan\(/g, 'Math.tan(')
+                    // log/exp
+                    .replace(/(?<![a-z])log\(/g, 'Math.log10(')
                     .replace(/ln\(/g, 'Math.log(')
-                    .replace(/exp\(/g, 'Math.exp(')
+                    .replace(/(?<![a-z])exp\(/g, 'Math.exp(')
+                    // misc
+                    .replace(/sqrt\(/g, 'Math.sqrt(')
+                    .replace(/floor\(/g, 'Math.floor(')
+                    .replace(/ceil\(/g, 'Math.ceil(')
+                    .replace(/abs\(/g, 'Math.abs(')
                     .replace(/\|/g, 'Math.abs(')
-                    .replace(/Math\.log\(/g, 'Math.log(');
-                
+                    // factorial: 5! → factorial(5)
+                    .replace(/(\d+(?:\.\d+)?)!/g, (_, n) => `factorial(${n})`);
+
                 const result = eval(processed);
-                return typeof result === 'number' ? parseFloat(result.toFixed(12)) : 'Error';
+                return typeof result === 'number' && isFinite(result) ? parseFloat(result.toFixed(12)) : 'Error';
             } catch (e) {
                 return 'Error';
             }
         }
 
-        // ========== 按鈕事件 ==========
+        // ========== Calc Category Tabs ==========
+        function initCalcCats() {
+            document.querySelectorAll('.calc-cat').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.calc-cat').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.cat-panel').forEach(p => p.classList.add('hidden'));
+                    btn.classList.add('active');
+                    currentCalcCat = btn.dataset.cat;
+                    document.getElementById(currentCalcCat + 'Grid').classList.remove('hidden');
+                });
+            });
+        }
+
+        // ========== Button Events ==========
         document.querySelectorAll('.btn').forEach(btn => {
             btn.addEventListener('click', () => {
+                // Base conversion buttons are handled separately
+                if (btn.dataset.digit !== undefined) return;
+
                 const text = btn.textContent.trim();
+
+                // Physical constants
+                if (btn.dataset.value) {
+                    if (currentDisplay === '0') currentDisplay = btn.dataset.value;
+                    else currentDisplay += btn.dataset.value;
+                    displayFormula.textContent = btn.title || '';
+                    updateDisplay();
+                    return;
+                }
 
                 if (text === '=') {
                     const result = calculate(currentDisplay);
@@ -1150,14 +1114,30 @@
                         currentDisplay = 'Error';
                         updateDisplay();
                     }
-                } else if (text === 'C' || text === t('btn_clear')) {
+                } else if (text === 'C') {
                     currentDisplay = '0';
                     displayFormula.textContent = '';
                     updateDisplay();
-                } else if (text === '←' || text === t('btn_backspace')) {
+                } else if (text === '←') {
                     currentDisplay = currentDisplay.slice(0, -1) || '0';
                     updateDisplay();
-                } else if (currentDisplay === '0' && text !== '.' && text !== '(') {
+                } else if (text === 'n!') {
+                    if (currentDisplay !== '0' && currentDisplay !== 'Error') {
+                        currentDisplay += '!';
+                    }
+                    updateDisplay();
+                } else if (text === 'mod') {
+                    currentDisplay += '%';
+                    updateDisplay();
+                } else if (text === 'x²') {
+                    if (currentDisplay !== '0' && /[\d)]$/.test(currentDisplay)) {
+                        currentDisplay += '^2';
+                    }
+                    updateDisplay();
+                } else if (text === 'EE') {
+                    if (currentDisplay !== '0') currentDisplay += 'e';
+                    updateDisplay();
+                } else if (currentDisplay === '0' && text !== '.' && text !== '(' && !text.endsWith('(')) {
                     currentDisplay = text;
                     updateDisplay();
                 } else {
@@ -1167,34 +1147,43 @@
             });
         });
 
-        // ========== 標籤切換 ==========
+        // ========== Main Tabs ==========
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 tabs.forEach(t => t.classList.remove('active'));
                 tabContents.forEach(c => c.classList.add('hidden'));
-                
                 tab.classList.add('active');
                 const tabName = tab.dataset.tab;
                 document.getElementById(tabName + 'Panel').classList.remove('hidden');
-
-                if (tabName === 'formula') {
-                    renderFormulas();
-                    renderCustomFormulas();
-                } else if (tabName === 'saved') {
-                    renderSaved();
-                }
+                if (tabName === 'formula') { renderFormulas(); renderCustomFormulas(); }
+                else if (tabName === 'saved') { renderSaved(); }
             });
         });
 
-        // ========== 公式庫搜索 ==========
+        // ========== Formula Category Filter ==========
+        function initFormulaCats() {
+            document.querySelectorAll('.fcbtn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.fcbtn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFormulaCat = btn.dataset.fcat;
+                    renderFormulas();
+                });
+            });
+        }
+
         function renderFormulas() {
             const query = formulaSearch.value.toLowerCase();
-            const filtered = builtInFormulas.filter(f => 
-                f.name.toLowerCase().includes(query) ||
-                f.category.toLowerCase().includes(query) ||
-                f.vars.some(v => v.toLowerCase().includes(query)) ||
-                f.expr.toLowerCase().includes(query)
-            );
+            let filtered = builtInFormulas.filter(f => {
+                const matchCat = currentFormulaCat === 'all' || f.group === currentFormulaCat;
+                const matchQuery = !query ||
+                    f.name.toLowerCase().includes(query) ||
+                    f.category.toLowerCase().includes(query) ||
+                    f.group.toLowerCase().includes(query) ||
+                    f.vars.some(v => v.toLowerCase().includes(query)) ||
+                    f.expr.toLowerCase().includes(query);
+                return matchCat && matchQuery;
+            });
 
             if (filtered.length === 0) {
                 formulaList.innerHTML = `<div class="empty-state">${t('empty_formula')}</div>`;
@@ -1205,30 +1194,25 @@
                 <div class="formula-item" onclick="selectFormula(${f.id}, '${f.name}', '${f.expr}', ${JSON.stringify(f.vars).replace(/"/g, '&quot;')})">
                     <div class="formula-name">${f.name}</div>
                     <div class="formula-expr">${f.expr}</div>
-                    <div class="formula-category">${f.category}</div>
+                    <span class="formula-category">${f.category}</span>
+                    <span class="formula-group-badge group-${f.group}">${f.group}</span>
                 </div>
             `).join('');
         }
 
-        formulaSearch.addEventListener('input', () => {
-            renderFormulas();
-            renderCustomFormulas();
-        });
+        formulaSearch.addEventListener('input', () => { renderFormulas(); renderCustomFormulas(); });
 
-        // ========== 自建公式 ==========
+        // ========== Custom Formulas ==========
         function renderCustomFormulas() {
             const query = formulaSearch.value.toLowerCase();
-            
-            const filtered = customFormulas.filter(f => 
+            const filtered = customFormulas.filter(f =>
+                !query ||
                 f.name.toLowerCase().includes(query) ||
                 f.category.toLowerCase().includes(query) ||
                 f.expr.toLowerCase().includes(query)
             );
 
-            if (filtered.length === 0) {
-                customFormulaList.innerHTML = '';
-                return;
-            }
+            if (filtered.length === 0) { customFormulaList.innerHTML = ''; return; }
 
             customFormulaList.innerHTML = `
                 <div class="section-title">${t('formula_custom')}（搜尋結果）</div>
@@ -1249,123 +1233,80 @@
             const name = customFormulaName.value.trim();
             const expr = customFormulaExpr.value.trim();
             const category = customFormulaCategory.value.trim() || '自訂';
-
-            if (!name || !expr) {
-                alert('請輸入公式名稱和表達式');
-                return;
-            }
-
-            const varPattern = /[a-zA-Z_]\w*/g;
-            const vars = [...new Set(expr.match(varPattern) || [])];
-
-            const newFormula = {
-                id: Date.now(),
-                name,
-                expr,
-                category,
-                vars
-            };
-
-            customFormulas.push(newFormula);
+            if (!name || !expr) { alert('請輸入公式名稱和表達式'); return; }
+            const vars = [...new Set((expr.match(/[a-zA-Z_]\w*/g) || []))];
+            customFormulas.push({ id: Date.now(), name, expr, category, vars });
             localStorage.setItem('customFormulas', JSON.stringify(customFormulas));
-
-            customFormulaName.value = '';
-            customFormulaExpr.value = '';
-            customFormulaCategory.value = '';
-
-            renderFormulas();
-            renderCustomFormulas();
+            customFormulaName.value = ''; customFormulaExpr.value = ''; customFormulaCategory.value = '';
+            renderFormulas(); renderCustomFormulas();
         });
 
         clearFormulaBtn.addEventListener('click', () => {
-            customFormulaName.value = '';
-            customFormulaExpr.value = '';
-            customFormulaCategory.value = '';
+            customFormulaName.value = ''; customFormulaExpr.value = ''; customFormulaCategory.value = '';
         });
 
-        window.deleteCustomFormula = (id) => {
+        window.deleteCustomFormula = id => {
             customFormulas = customFormulas.filter(f => f.id !== id);
             localStorage.setItem('customFormulas', JSON.stringify(customFormulas));
-            renderFormulas();
-            renderCustomFormulas();
+            renderFormulas(); renderCustomFormulas();
         };
 
-        // ========== 選擇公式並打開 Modal ==========
+        // ========== Formula Modal ==========
         window.selectFormula = (id, name, expr, vars) => {
             document.getElementById('modalTitle').textContent = name;
             document.getElementById('modalFormula').textContent = `公式: ${expr}`;
-
-            const modalVars = document.getElementById('modalVariables');
-            modalVars.innerHTML = vars.map(v => `
+            document.getElementById('modalVariables').innerHTML = vars.map(v => `
                 <div class="variable-input">
                     <label>${v}</label>
                     <input type="number" id="var_${v}" placeholder="輸入 ${v} 的值" step="any">
                 </div>
             `).join('');
-
             window.currentFormulaExpr = expr;
             window.currentFormulaVars = vars;
             window.currentFormulaName = name;
-
             formulaModal.classList.add('active');
         };
 
-        closeModalBtn.addEventListener('click', () => {
-            formulaModal.classList.remove('active');
-        });
+        closeModalBtn.addEventListener('click', () => formulaModal.classList.remove('active'));
 
         calculateFormulaBtn.addEventListener('click', () => {
-            const vars = window.currentFormulaVars;
             let expr = window.currentFormulaExpr;
-
-            for (let v of vars) {
+            for (let v of window.currentFormulaVars) {
                 const value = document.getElementById(`var_${v}`).value;
-                if (value === '') {
-                    alert(`請輸入 ${v} 的值`);
-                    return;
-                }
+                if (value === '') { alert(`請輸入 ${v} 的值`); return; }
                 expr = expr.replace(new RegExp(`\\b${v}\\b`, 'g'), `(${value})`);
             }
-
             const result = calculate(expr);
             if (result !== 'Error') {
                 currentDisplay = result.toString();
-                displayFormula.textContent = `${window.currentFormulaName}`;
+                displayFormula.textContent = window.currentFormulaName;
                 updateDisplay();
-                
-                savedFormulas.unshift({ id: Date.now(), formula: `${window.currentFormulaName}`, result });
+                savedFormulas.unshift({ id: Date.now(), formula: window.currentFormulaName, result });
                 if (savedFormulas.length > 10) savedFormulas.pop();
                 localStorage.setItem('savedFormulas', JSON.stringify(savedFormulas));
                 renderSaved();
             }
-
             formulaModal.classList.remove('active');
         });
 
-        // ========== 匯率 ==========
+        // ========== Exchange Rates ==========
         async function fetchExchangeRates() {
             try {
                 const response = await fetch('https://open.er-api.com/v6/latest/TWD');
                 const data = await response.json();
-                
                 if (data.rates) {
-                    Object.keys(currencyList).forEach(currency => {
-                        exchangeRates[currency] = data.rates[currency] || 0;
-                    });
+                    Object.keys(currencyList).forEach(c => { exchangeRates[c] = data.rates[c] || 0; });
                     localStorage.setItem('exchangeRates', JSON.stringify(exchangeRates));
                 }
-            } catch (e) {
-                console.log('匯率更新失敗');
-            }
+            } catch (e) {}
         }
-
         refreshBtn.addEventListener('click', fetchExchangeRates);
 
-        // ========== 儲存管理 ==========
+        // ========== Saved ==========
         function renderSaved() {
             savedCount.textContent = savedFormulas.length;
             if (savedFormulas.length === 0) {
-                savedList.innerHTML = '<div class="empty-state">' + t('empty_saved') + '</div>';
+                savedList.innerHTML = `<div class="empty-state">${t('empty_saved')}</div>`;
                 return;
             }
             savedList.innerHTML = savedFormulas.map(f => `
@@ -1379,16 +1320,87 @@
             `).join('');
         }
 
-        window.deleteSaved = (id) => {
+        window.deleteSaved = id => {
             savedFormulas = savedFormulas.filter(f => f.id !== id);
             localStorage.setItem('savedFormulas', JSON.stringify(savedFormulas));
             renderSaved();
         };
 
-        // ========== 初始化 ==========
-        function attachEventListeners() {
-            renderSaved();
+        // ========== Base Conversion ==========
+        const BASE_VALID_DIGITS = { DEC: '0123456789', BIN: '01', OCT: '01234567', HEX: '0123456789ABCDEF' };
+
+        function initBaseModes() {
+            document.querySelectorAll('.base-mode').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.base-mode').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    baseMode = btn.dataset.mode;
+                    baseInput = '0';
+                    updateBaseDigitStates();
+                    updateBaseDisplays();
+                    updateBaseRowHighlight();
+                });
+            });
         }
+
+        function initBaseRows() {
+            document.querySelectorAll('.base-row').forEach(row => {
+                row.addEventListener('click', () => {
+                    const mode = row.dataset.base;
+                    document.querySelectorAll('.base-mode').forEach(b => {
+                        b.classList.toggle('active', b.dataset.mode === mode);
+                    });
+                    baseMode = mode;
+                    baseInput = '0';
+                    updateBaseDigitStates();
+                    updateBaseDisplays();
+                    updateBaseRowHighlight();
+                });
+            });
+
+            document.querySelectorAll('[data-digit]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const d = btn.dataset.digit;
+                    if (d === 'CLR') { baseInput = '0'; }
+                    else if (d === '←') { baseInput = baseInput.slice(0, -1) || '0'; }
+                    else {
+                        if (baseInput === '0') baseInput = d;
+                        else baseInput += d;
+                    }
+                    updateBaseDisplays();
+                });
+            });
+        }
+
+        function updateBaseDigitStates() {
+            const valid = BASE_VALID_DIGITS[baseMode];
+            document.querySelectorAll('[data-digit]').forEach(btn => {
+                const d = btn.dataset.digit;
+                if (d === 'CLR' || d === '←') return;
+                const isValid = valid.includes(d);
+                btn.disabled = !isValid;
+                btn.style.opacity = isValid ? '1' : '0.2';
+            });
+        }
+
+        function updateBaseRowHighlight() {
+            document.querySelectorAll('.base-row').forEach(row => {
+                row.classList.toggle('active-row', row.dataset.base === baseMode);
+            });
+        }
+
+        function updateBaseDisplays() {
+            const radix = { DEC: 10, BIN: 2, OCT: 8, HEX: 16 }[baseMode];
+            const decVal = parseInt(baseInput, radix);
+            const ok = !isNaN(decVal);
+            document.getElementById('baseDec').textContent = ok ? decVal.toString(10) : '?';
+            document.getElementById('baseBin').textContent = ok ? decVal.toString(2) : '?';
+            document.getElementById('baseOct').textContent = ok ? decVal.toString(8) : '?';
+            document.getElementById('baseHex').textContent = ok ? decVal.toString(16).toUpperCase() : '?';
+        }
+
+        // ========== Attach misc listeners ==========
+        function attachEventListeners() { renderSaved(); }
 
         init();
     </script>
