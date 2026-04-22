@@ -508,7 +508,9 @@
         .modal-formula { font-size: 12px; color: var(--text-dark-secondary); margin-bottom: 16px; font-family: 'Courier New', monospace; }
         .modal-variables { margin-bottom: 16px; }
         .variable-input { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-        .variable-input label { min-width: 40px; font-weight: 600; color: var(--primary); }
+        .variable-input label { min-width: 60px; display: flex; flex-direction: column; gap: 2px; }
+        .var-name { font-weight: 700; color: var(--primary); font-size: 14px; }
+        .var-desc { font-size: 10px; color: var(--text-dark-secondary); white-space: nowrap; }
         .variable-input input {
             flex: 1; padding: 8px;
             border: 1px solid var(--border-dark);
@@ -1067,6 +1069,75 @@
             { id: 81, name: '歐姆定律(電壓)',  expr: 'I*R',                    vars: ['I','R'],             category: '電磁',  group: '物理' },
         ];
 
+        // ========== 公式變數說明 ==========
+        const varDescMap = {
+            // 數學
+            1:  { r: '半徑' },
+            2:  { l: '長', w: '寬' },
+            3:  { b: '底', h: '高' },
+            4:  { a: '上底', b: '下底', h: '高' },
+            5:  { r: '半徑' },
+            6:  { l: '長', w: '寬' },
+            7:  { r: '半徑' },
+            8:  { r: '半徑', h: '高' },
+            9:  { l: '長', w: '寬', h: '高' },
+            10: { r: '底面半徑', h: '高' },
+            11: { a: '直角邊 a', b: '直角邊 b' },
+            12: { a: '邊 a', b: '邊 b', c: '邊 c' },
+            13: { x1: '數值 1', x2: '數值 2' },
+            14: { part: '部分量', whole: '總量' },
+            15: { x: '數值' }, 16: { x: '數值' }, 17: { x: '數值' }, 18: { x: '數值' },
+            19: { x: '指數' },
+            20: { x: '數值（> 0）' },
+            21: { x: '數值（> 0）' },
+            22: { x: 'x 值', a: '斜率', b: 'y 截距' },
+            23: { x: 'x 值', a: 'x² 係數', b: 'x 係數', c: '常數項' },
+            24: { a: 'x² 係數', b: 'x 係數', c: '常數項' },
+            25: { x1: '點1 x', y1: '點1 y', x2: '點2 x', y2: '點2 y' },
+            // 工程
+            30: { I: '電流 (A)', R: '電阻 (Ω)' },
+            31: { V: '電壓 (V)', I: '電流 (A)' },
+            32: { R1: '電阻1 (Ω)', R2: '電阻2 (Ω)', R3: '電阻3 (Ω)' },
+            33: { R1: '電阻1 (Ω)', R2: '電阻2 (Ω)' },
+            34: { R: '電阻 (Ω)', C: '電容 (F)' },
+            35: { C: '電容 (F)', V: '電壓 (V)' },
+            36: { V: '量測電壓', V0: '參考電壓' },
+            37: { F: '力 (N)', d: '位移 (m)' },
+            38: { Pout: '輸出功率', Pin: '輸入功率' },
+            // 金融
+            39: { P: '本金', r: '年利率（如 0.05）', n: '每年複利次數', t: '年數' },
+            40: { P: '貸款金額', r: '月利率（如 0.005）', n: '總期數（月）' },
+            41: { P: '本金', r: '年利率（如 0.05）', t: '年數' },
+            42: { F: '未來金額', r: '年利率（如 0.05）', n: '每年複利次數', t: '年數' },
+            43: { PMT: '每期存入金額', r: '每期利率', n: '總期數' },
+            44: { PMT: '每期收入金額', r: '每期利率', n: '總期數' },
+            45: { V2: '現值（賣出價）', V1: '成本（買入價）' },
+            46: { r: '年化報酬率 %（如 6）' },
+            47: { P: '股價', E: '每股盈餘 EPS' },
+            // 科學
+            50: { n: '莫耳數 (mol)', T: '溫度 (K)', V: '體積 (L)' },
+            51: { m: '質量 (g)', M: '莫耳質量 (g/mol)' },
+            52: { n: '莫耳數 (mol)', V: '體積 (L)' },
+            53: { H: 'H⁺ 濃度 (mol/L)' },
+            54: { C1: '初始濃度', V1: '初始體積', V2: '稀釋後體積' },
+            55: { m: '質量 (g)', V: '體積 (cm³)' },
+            56: { actual: '實際產量', theoretical: '理論產量' },
+            57: { n: '主量子數 (1,2,3…)' },
+            // 物理
+            70: { m: '質量 (kg)', a: '加速度 (m/s²)' },
+            71: { m: '質量 (kg)', v: '速度 (m/s)' },
+            72: { m: '質量 (kg)', h: '高度 (m)' },
+            73: { m: '質量 (kg)', v: '速度 (m/s)' },
+            74: { d: '距離 (m)', t: '時間 (s)' },
+            75: { t: '時間 (s)' },
+            76: { f: '頻率 (Hz)', lambda: '波長 (m)' },
+            77: { m: '質量 (g)', c: '比熱（水=4.18）', dT: '溫度差 (°C)' },
+            78: { q1: '電荷1 (C)', q2: '電荷2 (C)', r: '距離 (m)' },
+            79: { m1: '質量1 (kg)', m2: '質量2 (kg)', r: '距離 (m)' },
+            80: { F: '受力 (N)', q: '電荷量 (C)' },
+            81: { I: '電流 (A)', R: '電阻 (Ω)' },
+        };
+
         // ========== 應用狀態 ==========
         let currentDisplay = '0';
         let currentCalcCat = 'math';
@@ -1421,12 +1492,16 @@
 
         // ========== Formula Modal ==========
         window.selectFormula = (id, name, expr, vars) => {
+            const desc = varDescMap[id] || {};
             document.getElementById('modalTitle').textContent = name;
             document.getElementById('modalFormula').textContent = `公式: ${expr}`;
             document.getElementById('modalVariables').innerHTML = vars.map(v => `
                 <div class="variable-input">
-                    <label>${v}</label>
-                    <input type="number" id="var_${v}" placeholder="輸入 ${v} 的值" step="any">
+                    <label>
+                        <span class="var-name">${v}</span>
+                        ${desc[v] ? `<span class="var-desc">${desc[v]}</span>` : ''}
+                    </label>
+                    <input type="number" id="var_${v}" placeholder="${desc[v] || '輸入數值'}" step="any">
                 </div>
             `).join('');
             window.currentFormulaExpr = expr;
