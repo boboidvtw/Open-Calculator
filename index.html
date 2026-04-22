@@ -1496,7 +1496,7 @@
                 const converted = twdAmount * rate;
                 const reverseRate = (1 / rate).toFixed(4);
                 return `
-                    <div class="currency-card" onclick="setCalcFromCurrency(${(1/rate).toFixed(6)})">
+                    <div class="currency-card" onclick="selectForeignCurrency('${c.code}')">
                         <div class="currency-card-flag">${c.flag}</div>
                         <div class="currency-card-info">
                             <div class="currency-card-code">${c.code} <span style="font-weight:400;color:var(--text-dark-secondary);font-size:11px;">${c.name}</span></div>
@@ -1534,12 +1534,13 @@
             }</div>`;
         }
 
-        // 點擊幣別卡片 → 帶入計算機
-        window.setCalcFromCurrency = (rate) => {
-            currentDisplay = rate.toString();
-            updateDisplay();
-            displayFormula.textContent = '匯率換算';
-            document.querySelector('.tab[data-tab="calc"]').click();
+        // 點擊幣別卡片 → 選入「當前貨幣」下拉並同步（不跳頁）
+        window.selectForeignCurrency = (code) => {
+            const sel = document.getElementById('foreignSelect');
+            sel.value = code;
+            document.getElementById('foreignUnit').textContent = code;
+            syncFromTWD();
+            document.querySelector('.currency-foreign').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         };
 
         document.getElementById('currencyInput').addEventListener('input', renderCurrencyGrid);
