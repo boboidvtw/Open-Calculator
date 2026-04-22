@@ -670,6 +670,15 @@
             color: rgba(167, 139, 250, 0.7);
             margin-top: 2px; line-height: 1;
         }
+        /* ===== Responsive: hide sidebar on mobile ===== */
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .main-sidebar {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -688,7 +697,7 @@
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="main-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <!-- 主計算機 -->
             <div class="panel">
                 <div class="display">
@@ -1058,7 +1067,7 @@
             </div>
 
             <!-- 側邊欄 -->
-            <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="main-sidebar" style="display: flex; flex-direction: column; gap: 20px;">
                 <div class="panel">
                     <h3 style="margin-bottom: 16px; font-size: 18px;" data-i18n="sidebar_common">常用按鈕</h3>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px;">
@@ -1778,18 +1787,16 @@
                     ? '<div class="empty-state">尚無自建公式</div>'
                     : customFormulas.map(customFormulaItem).join('');
             } else {
-                // 其他 tab：顯示同分類的自建公式
+                // 其他 tab：只顯示同分類的自建公式，無符合時顯示空提示
                 const matchSection = document.getElementById('customMatchSection');
                 const matchList = document.getElementById('customMatchList');
                 const matched = customFormulas.filter(f =>
                     currentFormulaCat === 'all' || (f.group || '其他') === currentFormulaCat
                 );
-                if (matched.length === 0) {
-                    matchSection.style.display = 'none';
-                } else {
-                    matchSection.style.display = '';
-                    matchList.innerHTML = matched.map(customFormulaItem).join('');
-                }
+                matchSection.style.display = '';
+                matchList.innerHTML = matched.length === 0
+                    ? '<div class="empty-state">尚無自建公式</div>'
+                    : matched.map(customFormulaItem).join('');
             }
         }
 
