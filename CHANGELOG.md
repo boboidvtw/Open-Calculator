@@ -356,9 +356,13 @@ v3.8.5 只修了淺色主題，深色主題的既有缺口留在 backlog。本�
 - **儲存列表**：以 `<img src=x onerror=...>` payload 驗證輸出為字面文字、零注入元素、零 inline `onclick`、XSS 未觸發；刪除與計數徽章正常
 - console 零 error；`sw.js` `CACHE_NAME` v3.8.5 → v3.9.0
 
-### ⚠️ 未完成
+### ⚠️ 未完成 → **[已完成 2026-08-25]**
 
-Worker v2.4.1（`/health` 的 `paypal_client_id_hash`）**仍未部署** —— 本機 Cloudflare OAuth token 已失效（`wrangler whoami` 回 `Failed to fetch auth token: 400`），需重新 `wrangler login`。雙環境 `--dry-run` 已通過、bindings 正確。前端的一致性檢查在 Worker 未回傳該欄位時走「警告放行」分支，不影響金流。
+~~Worker v2.4.1（`/health` 的 `paypal_client_id_hash`）**仍未部署**~~ —— 2026-08-25 重新 `wrangler login` 後部署完成，線上 `version 2.4.1`、hash 與前端一致（真實瀏覽器 LIVE 模式實測 `sdk_loaded: true`、按鈕正常渲染）。
+
+**部署當下這個守門立刻抓到一個潛伏中的缺陷**：Worker 的 `PAYPAL_CLIENT_ID` secret 存的正是 2026-06-14 那次事故的**錯字值**（hash 回傳 `acc4fc8cfcac`，與本檔 v3.8.5 段落當時算出的錯字 hash 逐字元相同）——當年只修了前端，Worker secret 沒跟著修（Cloudflare 版本紀錄顯示 secrets 最後變更於 2026-05-28，早於發現打錯字那天）。影響不只按鈕：`license-validator.js:215` 用 `client_id:client_secret` 換 PayPal OAuth token，唯一消費者是 `verifyPayPalWebhook`，因此 webhook 驗證一路 401 → 路由回 500 → **訂閱事件從未寫入 KV**。處置＝先 `wrangler rollback` 恢復服務，再以 `wrangler versions secret put`（不觸發部署）更正 secret，最後 `versions deploy @100%` 並重驗 hash 一致。最終版本 `426b7c5b-e6d5-4452-af41-08113cd9d6b7`。
+
+**仍待驗證**：webhook OAuth 是否確實恢復，需實際 PayPal 事件（webhook simulator 或 observability log）才證明得了；在此之前不宜宣稱金流閉環已通。
 
 ---
 
@@ -389,7 +393,7 @@ Worker v2.4.1（`/health` 的 `paypal_client_id_hash`）**仍未部署** —— 
   - Worker 網路失敗或回傳無此欄位（舊版 Worker）→ `console.warn` 後放行，不阻擋購買流程（避免基礎設施短暫異常誤傷金流）
 - `index.html` 內 `js/paypal-integration.js?v=3.3.1` → `?v=3.3.2`
 - **驗證**：(1) 用 2026-06-14 事故的實際錯字重現，確認兩者 hash 完全不同（`e3b111f4f353` vs `acc4fc8cfcac`），證明機制能偵測到那次事故；(2) 對現行（尚未部署新版）production Worker 真實請求 `/health`，確認缺欄位時走「警告放行」分支、PayPal 按鈕正常渲染，零回歸；(3) mock 一組錯誤 hash 驗證阻擋分支正確觸發 `console.error` + 擋下 SDK、UI 顯示排查訊息
-- **待辦**：本次僅修改本機檔案，**尚未 `wrangler deploy`** — Worker 端 `paypal_client_id_hash` 要等實際部署後才會在 production 生效，部署前請先與使用者確認（金流 Worker 屬對外服務變更）
+- ~~**待辦**：本次僅修改本機檔案，**尚未 `wrangler deploy`**~~ → **[已完成 2026-08-25]** 已部署至 production 並驗證。上線後隨即偵測到 Worker secret 仍是本節所述的錯字值（`acc4fc8cfcac`）——**這個守門在部署後 90 秒內就命中了它設計要防的那個事故**，詳見 v3.9.0 段落的「未完成 → 已完成」記述
 
 ---
 
