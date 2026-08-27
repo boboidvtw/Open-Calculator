@@ -1,5 +1,5 @@
 // ∑ Calc Service Worker — Cache-first for offline support
-const CACHE_NAME = 'sigma-calc-v3.11.1';
+const CACHE_NAME = 'sigma-calc-v3.11.2';
 const ASSETS = [
   '/',
   '/index.html',
@@ -39,7 +39,16 @@ self.addEventListener('fetch', event => {
   // Network-first for external APIs (exchange rate, PayPal, Cloudflare Worker)
   if (NETWORK_FIRST_HOSTS.some(host => url.hostname.includes(host))) {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
+      fetch(event.request).catch(async () => {
+        // 只有 GET 有快取可回退；非冪等請求（POST 等）離線就回乾淨的 network error。
+        // 關鍵：caches.match 未命中會 resolve 成 undefined，直接回傳會讓
+        // respondWith(undefined) 丟 TypeError，把單純的網路失敗變成看不懂的 SW 錯誤。
+        if (event.request.method === 'GET') {
+          const cached = await caches.match(event.request);
+          if (cached) return cached;
+        }
+        return Response.error();
+      })
     );
     return;
   }

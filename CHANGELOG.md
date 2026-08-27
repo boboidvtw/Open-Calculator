@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [3.11.2] - 2026-08-27 — 修兩個潛伏 bug：SW 離線回應 + Worker 錯誤洩漏
+
+- **`sw.js` network-first 分支**：`fetch().catch(() => caches.match(request))` 在快取
+  未命中時會 resolve 成 `undefined`，`respondWith(undefined)` 丟 `TypeError`，把單純的
+  網路失敗變成看不懂的 SW 錯誤。影響走 network-first 的請求（匯率 API、PayPal、
+  sandbox 授權）在離線／被擋時。改為：GET 有快取才回退、否則回 `Response.error()`
+  （乾淨的 network error），非 GET 直接回 network error。CACHE_NAME 隨之 bump。
+- **Worker `2.4.2`**：main catch 原本把 `err.stack` 放進 500 回應，洩漏內部細節
+  （堆疊、可能含 PayPal 回應內文）。改為只回 `internal server error`，完整錯誤僅進
+  server log。（需 `wrangler deploy` 才生效。）
+
 ## [3.11.1] - 2026-08-21 — 焦點指示器：補完 WCAG 2.4.7 / 1.4.11
 
 v3.11.0 的 a11y 稽核掃到但不屬於當次改動範圍的四處遺留問題，連同追查過程中發現的
