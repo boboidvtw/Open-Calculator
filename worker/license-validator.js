@@ -2,6 +2,7 @@
    ∑ Calc License Validator — Cloudflare Worker v2
    建立日期：2026-05-14
    版本：2.4.1（2026-07-22：/health 加 paypal_client_id_hash，供前端 fail-loud cross-check）
+   版本：2.4.2（2026-08-27：main catch 不再把 err.stack 回客戶端，避免內部細節洩漏）
         2.4.0（2026-05-29：JWT 加 tier 欄位 — Phase 2.3 Freemium 上線）
         2.3.0（2026-05-16：/webhook/paypal 加入來源 IP 觀察 log-only）
 
@@ -388,7 +389,7 @@ async function handleHealth(env) {
     : null;
   return jsonResponse({
     status: 'ok',
-    version: '2.4.1',
+    version: '2.4.2',
     timestamp: new Date().toISOString(),
     kv: kvOk,
     rateLimit: 'kv',
@@ -631,8 +632,9 @@ export default {
 
       return jsonResponse({ error: 'Not found' }, 404);
     } catch (err) {
-      console.error('Worker error:', err);
-      return jsonResponse({ error: err.message, stack: err.stack }, 500);
+      // 詳細錯誤（stack、可能含 PayPal 回應內文）只進 server log，不回客戶端（避免內部細節洩漏）
+      console.error('Worker error:', err && err.stack ? err.stack : err);
+      return jsonResponse({ error: 'internal server error' }, 500);
     }
   }
 };
